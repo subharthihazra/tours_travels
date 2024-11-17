@@ -66,12 +66,12 @@ export async function POST(req: NextRequest) {
 
     console.log(curPlan);
 
-    // await sendEmail({
-    //   price: curPlan?.price,
-    //   operator: curPlan?.operator,
-    //   email: userData?.email,
-    //   name: `${userData?.firstName} ${userData?.lastName}`,
-    // });
+    await sendEmail({
+      price: curPlan?.price,
+      plan: curPlan?.name,
+      email: userData?.email,
+      name: `${userData?.firstName} ${userData?.lastName}`,
+    });
 
     return NextResponse.json({ info: "Success" }, { status: 201 });
   } catch (error) {
