@@ -91,38 +91,39 @@ export default function Component() {
 
   return (
     <div>
-      <div className="fixed left-4 right-4 top-4 flex flex-row justify-between mb-4 bg-zinc-200 p-4 rounded-full align-middle">
+      <div className="fixed left-4 right-4 top-4 flex flex-row justify-between mb-4 bg-[#2f4f4f] p-4 rounded-xl align-middle">
         <div className="flex gap-2 px-2">
-          <ChevronLeft
+          <ChevronLeft className="text-white"
             onClick={() => {
               router.push("/user/dashboard");
             }}
           />
-          <h1 className="text-xl font-bold">Referral Program</h1>
+          <h1 className="text-xl font-bold text-white">Referral Program</h1>
         </div>
         <div className="flex justify-center">
           <UserButton />
         </div>
       </div>
-      <div className="h-screen flex place-items-center">
-        <Card className="w-full max-w-md mx-auto h-fit">
+      <div className="h-screen flex place-items-center bg-[#1e3d3d]">
+        <Card className="w-full max-w-md mx-auto h-fit bg-[#2f4f4f] border-2 border-[#4c6b6b] rounded-lg shadow-lg">
           <CardHeader>
-            <CardTitle>Referral Program</CardTitle>
-            <CardDescription>Generate or claim a referral code</CardDescription>
+            <CardTitle className="text-white">Referral Program</CardTitle>
+            <CardDescription className="text-gray-200">Generate or claim a referral code</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
-              <Label htmlFor="referral-code">Your Referral Code</Label>
+              <Label htmlFor="referral-code" className="text-white">Your Referral Code</Label>
               <div className="flex space-x-2">
                 <Input
                   id="referral-code"
                   value={referralCode}
                   readOnly
                   placeholder="Generate a code"
+                  className="bg-[#4c6b6b] text-white"
                 />
                 <Button
                   onClick={generateReferralCode}
-                  className=" bg-blue-600"
+                  className="bg-[#3e7a7a] text-white"
                   disabled={isloading}
                 >
                   Generate
@@ -132,25 +133,26 @@ export default function Component() {
                 onClick={copyReferralCode}
                 disabled={!referralCode}
                 variant="outline"
-                className="w-full"
+                className="w-full border-[#4c6b6b] text-white"
               >
                 <ClipboardCopy className="mr-2 h-4 w-4" />
                 Copy Code
               </Button>
             </div>
             <div className="space-y-4">
-              <Label htmlFor="claim-code">Claim a Referral Code</Label>
+              <Label htmlFor="claim-code" className="text-white">Claim a Referral Code</Label>
               <div className="flex space-x-2">
                 <Input
                   id="claim-code"
                   value={claimCode}
                   onChange={(e) => setClaimCode(e.target.value)}
                   placeholder="Enter referral code"
+                  className="bg-[#4c6b6b] text-white"
                 />
                 <Button
                   onClick={claimReferralCode}
                   disabled={!claimCode || isloading}
-                  className="bg-blue-600"
+                  className="bg-[#3e7a7a] text-white"
                 >
                   Claim
                 </Button>

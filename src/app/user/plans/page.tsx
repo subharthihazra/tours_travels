@@ -114,9 +114,9 @@ export default function Plans() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex flex-row justify-between mb-4 bg-zinc-200 p-4 rounded-full align-middle">
+        <div className="flex flex-row justify-between mb-4 bg-green-800 p-4 rounded-xl">
           <div className="flex gap-2 px-2">
             <ChevronLeft
               onClick={() => {
@@ -132,70 +132,76 @@ export default function Plans() {
         {isLoading ? (
           <div className="flex flex-col gap-3">
             {/* Skeleton loading */}
-            <div className="flex gap-3">
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
+
+            <div className="">
+              <Skeleton className="w-full h-[60px] rounded-xl bg-gray-700" />
             </div>
             <div className="flex gap-3">
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+            </div>
+            <div className="flex gap-3">
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
+              <Skeleton className="w-1/4 h-[20px] rounded-full bg-gray-700" />
             </div>
           </div>
         ) : (
           <>
             {currentPlan === null ? (
-              <Card className="bg-blue-50 border-blue-200">
+              <Card className="bg-green-700 border-green-500">
                 <CardHeader>
-                  <CardTitle className="text-red-800">
-                    No Plan Booked Yet
+                  <CardTitle className="text-red-200">
+                    No Purchase Yet
                   </CardTitle>
                 </CardHeader>
               </Card>
             ) : (
-              <Card className="bg-blue-50 border-blue-200">
+              <Card className="bg-green-700 border-green-500">
                 <CardHeader>
-                  <CardTitle className="text-blue-800">Current Plan</CardTitle>
+                  <CardTitle className="text-green-100">Last Purchase</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-green-200">
                       Destination
                     </p>
                     <p>{currentPlan?.destination}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-green-200">
                       Plan Name
                     </p>
                     <p>{currentPlan?.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">Price</p>
+                    <p className="text-sm font-medium text-green-200">Price</p>
                     <p>₹{currentPlan?.price}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-green-200">
                       Duration
                     </p>
                     <p>{currentPlan?.duration}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-green-200">
                       Start Date
                     </p>
                     <p>{currentPlan?.startdate}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">
+                    <p className="text-sm font-medium text-green-200">
                       End Date
                     </p>
                     <p>{currentPlan?.enddate}</p>
                   </div>
                   {currentPlan?.description && (
                     <div>
-                      <p className="text-sm font-medium text-blue-600">
+                      <p className="text-sm font-medium text-green-200">
                         Description
                       </p>
                       <p>{currentPlan?.description}</p>
@@ -206,16 +212,16 @@ export default function Plans() {
             )}
 
             <div>
-              <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md flex gap-4">
+              <div className="w-full mx-auto p-4 bg-gray-800 rounded-lg shadow-md flex gap-4">
                 <Input
                   type="search"
                   placeholder="Search..."
-                  className="flex-grow border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="flex-grow border-green-300 focus:border-green-500 focus:ring-green-500 bg-gray-700"
                   onChange={(e: any) => setSearch(e.target.value)}
                 />
                 <Button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <Search className="h-4 w-4" />
                   <span className="sr-only">Search</span>
@@ -224,12 +230,12 @@ export default function Plans() {
             </div>
 
             {/* Available Plans */}
-            <Card>
+            <Card className="bg-slate-800">
               <CardHeader>
-                <CardTitle className="text-blue-800">
+                <CardTitle className="text-green-100">
                   Available Travel Plans
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-gray-400">
                   Choose a travel plan to book your next adventure.
                 </CardDescription>
               </CardHeader>
@@ -241,71 +247,81 @@ export default function Plans() {
                       .map((plan) => (
                         <Card
                           key={plan.id}
-                          className="hover:bg-blue-50 transition-colors"
+                          className="bg-slate-800 hover:bg-green-600 transition-colors text-white"
                           onClick={() => setSelectedPlan(plan)}
                         >
                           <CardContent className="p-4 flex justify-between items-center">
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 flex-grow">
                               <div>
-                                <p className="text-sm font-medium text-blue-600">
+                                <p className="text-sm font-medium text-green-200">
                                   Destination
                                 </p>
                                 <p>{plan.destination}</p>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-blue-600">
+                                <p className="text-sm font-medium text-green-200">
                                   Plan Name
                                 </p>
                                 <p>{plan.name}</p>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-blue-600">
+                                <p className="text-sm font-medium text-green-200">
                                   Price
                                 </p>
                                 <p>₹{plan.price}</p>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-blue-600">
+                                <p className="text-sm font-medium text-green-200">
                                   Duration
                                 </p>
                                 <p>{plan.duration}</p>
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-blue-600">
+                                <p className="text-sm font-medium text-green-200">
                                   Start Date
                                 </p>
                                 <p>{plan.startdate}</p>
                               </div>
                               <div>
-                                <Dialog>
-                                  <DialogTrigger>
-                                    <Button
-                                      className="w-full"
-                                      variant="outline"
-                                    >
-                                      Book Now
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>
-                                        You are going to purchase ...
-                                      </DialogTitle>
-                                    </DialogHeader>
-
-                                    <DialogFooter>
-                                      <Button
-                                        onClick={handleBooking}
-                                        disabled={
-                                          isLoading || !selectedPlan || booking
-                                        }
-                                      >
-                                        Pay now
-                                      </Button>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </Dialog>
+                                <p className="text-sm font-medium text-green-200">
+                                  End Date
+                                </p>
+                                <p>{plan.enddate}</p>
                               </div>
+                              <Dialog
+                                open={booking}
+                                onOpenChange={(open) => setBooking(open)}
+                              >
+                                <DialogTrigger>
+                                  <Button className="w-full" variant="default">
+                                    Book Now
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Booking Plan</DialogTitle>
+                                    <DialogDescription>
+                                      You are about to book a plan. Please
+                                      confirm your selection.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <DialogFooter>
+                                    
+                                    <Button
+                                      className="bg-gray-600 hover:bg-gray-700"
+                                      onClick={() => setBooking(false)}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      className="bg-green-600 hover:bg-green-700"
+                                      onClick={handleBooking}
+                                    >
+                                      Confirm
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
                             </div>
                           </CardContent>
                         </Card>

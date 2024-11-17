@@ -60,15 +60,16 @@ export default function History() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-row justify-between mb-4 bg-blue-200 p-4 rounded-full align-middle">
+    <div className="p-4 bg-gray-900 text-gray-100 min-h-screen w-full">
+      <div className="flex flex-row justify-between mb-4 bg-green-800 p-4 rounded-xl">
         <div className="flex gap-2 px-2">
           <ChevronLeft
             onClick={() => {
               router.push("/user/dashboard");
             }}
+            className="text-white hover:text-green-200"
           />
-          <h1 className="text-xl font-bold">Recharge History</h1>
+          <h1 className="text-xl font-bold text-white">Purchase History</h1>
         </div>
         <UserButton />
       </div>
@@ -97,7 +98,7 @@ export default function History() {
       )}
 
       {!isLoading && (
-        <div className="rounded-lg border">
+        <div className="rounded-lg border bg-gray-800 text-white">
           <Table>
             <TableHeader>
               <TableRow>
@@ -122,7 +123,7 @@ export default function History() {
                     {format(new Date(plan.startdate), "dd MMM yyyy")}
                   </TableCell>
                   <TableCell className="py-3">
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-4 w-4 text-green-200" />
                   </TableCell>
                 </TableRow>
               ))}
@@ -133,7 +134,7 @@ export default function History() {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {selectedPlan && (
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px] bg-gray-800 text-white">
             <DialogHeader>
               <DialogTitle>{selectedPlan?.name}</DialogTitle>
               <DialogDescription>Purchase details</DialogDescription>
@@ -167,7 +168,7 @@ export default function History() {
             </div>
 
             <Button
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-green-600 hover:bg-green-700"
               onClick={() => setIsDialogOpen(false)}
             >
               Close

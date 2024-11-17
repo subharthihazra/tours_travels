@@ -120,21 +120,21 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-row justify-between mb-4 bg-indigo-100 p-4 rounded-full align-middle">
-        <h1 className="text-xl font-bold px-2">Tours Travels Admin Dashboard</h1>
+    <div className="min-h-screen mx-auto p-6 bg-gray-800 text-white w-full">
+      <div className="flex flex-row justify-between mb-6 bg-gray-900 p-6 rounded-xl">
+        <h1 className="text-xl font-bold px-2 text-green-500">Tours Travels Admin Dashboard</h1>
         <div className="flex justify-center">
           <UserButton />
         </div>
       </div>
-      <div className="mb-4">
+      <div className="mb-6">
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-green-600 hover:bg-green-700 text-white">
               <Plus className="mr-2 h-4 w-4" /> Add New Plan
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="bg-gray-800">
             <PlanForm
               onSubmit={handleAddPlan}
               onCancel={() => setIsAddDialogOpen(false)}
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
         </Dialog>
       </div>
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="bg-gray-900 text-white rounded-lg">
           <TableHeader>
             <TableRow>
               <TableHead>Highlights</TableHead>
@@ -159,7 +159,7 @@ export default function AdminDashboard() {
           </TableHeader>
           <TableBody>
             {plans.map((plan) => (
-              <TableRow key={plan.id}>
+              <TableRow key={plan.id} className="hover:bg-gray-700">
                 <TableCell>{plan.highlights}</TableCell>
                 <TableCell>{plan.name}</TableCell>
                 <TableCell>₹{plan.price}</TableCell>
@@ -179,6 +179,7 @@ export default function AdminDashboard() {
                           variant="outline"
                           size="sm"
                           onClick={() => setCurrentPlan(plan)}
+                          className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -195,7 +196,7 @@ export default function AdminDashboard() {
                     </Dialog>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="sm">
+                        <Button variant="destructive" size="sm" className="bg-red-600 hover:bg-red-700">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
@@ -208,9 +209,10 @@ export default function AdminDashboard() {
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel className="bg-gray-600 text-white">Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleDeletePlan(plan.id)}
+                            className="bg-red-600 text-white"
                           >
                             Delete
                           </AlertDialogAction>
@@ -261,122 +263,118 @@ function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg">
       <DialogHeader>
-        <DialogTitle>{initialData ? "Edit Plan" : "Add New Plan"}</DialogTitle>
-        <DialogDescription>
+        <DialogTitle className="text-green-500">{initialData ? "Edit Plan" : "Add New Plan"}</DialogTitle>
+        <DialogDescription className="text-white">
           {initialData
             ? "Edit the details of the existing plan."
             : "Add a new tour and travel plan to the list."}
         </DialogDescription>
       </DialogHeader>
-      <div className="grid gap-4 py-4">
+      <div className="grid gap-6 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="highlights" className="text-right">
+          <Label htmlFor="highlights" className="text-right text-white">
             Highlights
           </Label>
           <Input
-            id="highlights"
+            type="text"
             name="highlights"
             value={formData.highlights}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right">
+          <Label htmlFor="name" className="text-right text-white">
             Plan Name
           </Label>
           <Input
-            id="name"
+            type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="price" className="text-right">
+          <Label htmlFor="price" className="text-right text-white">
             Price
           </Label>
           <Input
-            id="price"
-            name="price"
             type="number"
+            name="price"
             value={formData.price}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="startdate" className="text-right">
+          <Label htmlFor="startdate" className="text-right text-white">
             Start Date
           </Label>
           <Input
-            id="startdate"
-            name="startdate"
             type="date"
+            name="startdate"
             value={formData.startdate}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="enddate" className="text-right">
+          <Label htmlFor="enddate" className="text-right text-white">
             End Date
           </Label>
           <Input
-            id="enddate"
-            name="enddate"
             type="date"
+            name="enddate"
             value={formData.enddate}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="destination" className="text-right">
+          <Label htmlFor="destination" className="text-right text-white">
             Destination
           </Label>
           <Input
-            id="destination"
+            type="text"
             name="destination"
             value={formData.destination}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="duration" className="text-right">
+          <Label htmlFor="duration" className="text-right text-white">
             Duration
           </Label>
           <Input
-            id="duration"
+            type="text"
             name="duration"
             value={formData.duration}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="description" className="text-right">
+          <Label htmlFor="description" className="text-right text-white">
             Description
           </Label>
           <Textarea
-            id="description"
             name="description"
             value={formData.description || ""}
             onChange={handleChange}
-            className="col-span-3"
+            className="col-span-3 text-white"
           />
         </div>
       </div>
       <DialogFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button variant="outline" onClick={onCancel} className="text-gray-500">
           Cancel
         </Button>
-        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-          {initialData ? "Save" : "Add Plan"}
+        <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+          {initialData ? "Update Plan" : "Add Plan"}
         </Button>
       </DialogFooter>
     </form>

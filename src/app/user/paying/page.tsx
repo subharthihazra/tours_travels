@@ -22,25 +22,25 @@ function Component() {
   }, [router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 p-6">
       {success ? (
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-gray-800 border border-gray-700 rounded-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-bold text-white">
               Payment Success!
             </CardTitle>
           </CardHeader>
         </Card>
       ) : (
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-gray-800 border border-gray-700 rounded-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-bold text-white">
               Processing Payment
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center space-y-4">
-            <Loader2 className="w-16 h-16 text-blue-500 animate-spin" />
-            <p className="text-lg text-center text-gray-600">
+            <Loader2 className="w-16 h-16 text-green-500 animate-spin" />
+            <p className="text-lg text-center text-gray-300">
               Please wait while we process your payment. This may take a few
               moments.
             </p>
@@ -53,7 +53,7 @@ function Component() {
 
 export default function Paying() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="text-white">Loading...</div>}>
       <Component />
     </Suspense>
   );
