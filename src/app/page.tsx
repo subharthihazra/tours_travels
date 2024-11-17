@@ -52,8 +52,8 @@ export default function Component() {
                   Discover Beautiful Destinations
                 </h1>
                 <p className="max-w-[600px] text-white/90 md:text-xl">
-                  Experience the charm of European cities and create
-                  unforgettable memories
+                  Experience the charm of this Beautiful World and create
+                  unforgettable memories with us
                 </p>
               </div>
             </div>
