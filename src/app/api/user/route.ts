@@ -45,6 +45,8 @@ export async function POST(req: NextRequest) {
     //   curPlan: body.curPlanId,
     // });
 
+    console.log("hj", body)
+
     await History.create({
       userId: userData.userid,
       planId: body.curPlanId,
@@ -64,13 +66,12 @@ export async function POST(req: NextRequest) {
 
     console.log(curPlan);
 
-    await sendEmail({
-      phone: body.phone,
-      amount: curPlan?.amount,
-      operator: curPlan?.operator,
-      email: userData?.email,
-      name: `${userData?.firstName} ${userData?.lastName}`,
-    });
+    // await sendEmail({
+    //   price: curPlan?.price,
+    //   operator: curPlan?.operator,
+    //   email: userData?.email,
+    //   name: `${userData?.firstName} ${userData?.lastName}`,
+    // });
 
     return NextResponse.json({ info: "Success" }, { status: 201 });
   } catch (error) {

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,34 +25,37 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function History() {
-  const [selectedRecharge, setSelectedRecharge] = useState<any>(null);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [rechargeHistory, setRechargeHistory] = useState<any>([]);
-  const [isloading, setisloading] = useState<boolean>(true);
+  const [planHistory, setPlanHistory] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchHist() {
+    async function fetchHistory() {
       try {
         const { data } = await axios.get("/api/history", {
           withCredentials: true,
         });
+
         console.log(data);
-        setRechargeHistory(
+
+        setPlanHistory(
           data.data?.map((item: any) => ({ ...item, id: item._id }))
         );
       } catch (error: any) {
         console.log(error);
       }
-      setisloading(false);
+
+      setIsLoading(false);
     }
 
-    fetchHist();
+    fetchHistory();
   }, []);
 
-  const openDialog = (recharge: any) => {
-    setSelectedRecharge(recharge);
+  const openDialog = (plan: any) => {
+    setSelectedPlan(plan);
     setIsDialogOpen(true);
   };
 
@@ -71,7 +73,7 @@ export default function History() {
         <UserButton />
       </div>
 
-      {isloading && (
+      {isLoading && (
         <div className="flex flex-col gap-3">
           <div className="flex gap-3">
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
@@ -84,7 +86,7 @@ export default function History() {
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
-          </div>{" "}
+          </div>
           <div className="flex gap-3">
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
             <Skeleton className="w-1/4 h-[20px] rounded-full" />
@@ -94,30 +96,30 @@ export default function History() {
         </div>
       )}
 
-      {!isloading && (
+      {!isLoading && (
         <div className="rounded-lg border">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Plan Name</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Phone Number</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Destination</TableHead>
+                <TableHead>Start Date</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rechargeHistory.map((recharge: any) => (
+              {planHistory.map((plan: any) => (
                 <TableRow
-                  key={recharge.id}
+                  key={plan.id}
                   className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => openDialog(recharge)}
+                  onClick={() => openDialog(plan)}
                 >
-                  <TableCell className="py-3">{recharge.name}</TableCell>
-                  <TableCell className="py-3">₹{recharge.amount}</TableCell>
-                  <TableCell className="py-3">{recharge.phone}</TableCell>
+                  <TableCell className="py-3">{plan.name}</TableCell>
+                  <TableCell className="py-3">₹{plan.price}</TableCell>
+                  <TableCell className="py-3">{plan.destination}</TableCell>
                   <TableCell className="py-3">
-                    {format(recharge.date, "dd MMM yyyy")}
+                    {format(new Date(plan.startdate), "dd MMM yyyy")}
                   </TableCell>
                   <TableCell className="py-3">
                     <ChevronRight className="h-4 w-4" />
@@ -130,52 +132,40 @@ export default function History() {
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        {selectedRecharge && (
+        {selectedPlan && (
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>{selectedRecharge?.name}</DialogTitle>
-              <DialogDescription>Recharge details</DialogDescription>
+              <DialogTitle>{selectedPlan?.name}</DialogTitle>
+              <DialogDescription>Purchase details</DialogDescription>
             </DialogHeader>
+
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Amount:</span>
-                <span>₹{selectedRecharge?.amount}</span>
+                <span className="font-medium">Price:</span>
+                <span>₹{selectedPlan?.price}</span>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Phone Number:</span>
-                <span>{selectedRecharge?.phone}</span>
+                <span className="font-medium">Destination:</span>
+                <span>{selectedPlan?.destination}</span>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Date:</span>
-                <span>{format(selectedRecharge?.date, "dd MMM yyyy")}</span>
+                <span className="font-medium">Start Date:</span>
+                <span>{format(new Date(selectedPlan?.startdate), "dd MMM yyyy")}</span>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Operator:</span>
-                <span>{selectedRecharge?.operator}</span>
+                <span className="font-medium">End Date:</span>
+                <span>{format(new Date(selectedPlan?.enddate), "dd MMM yyyy")}</span>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Validity:</span>
-                <span>{selectedRecharge?.validity}</span>
+                <span className="font-medium">Duration:</span>
+                <span>{selectedPlan?.duration} days</span>
               </div>
               <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Data:</span>
-                <span>{selectedRecharge?.data}</span>
-              </div>
-              <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">Voice:</span>
-                <span>{selectedRecharge?.voice}</span>
-              </div>
-              <div className="grid grid-cols-2 items-center gap-4">
-                <span className="font-medium">SMS:</span>
-                <span>{selectedRecharge?.sms}</span>
-              </div>
-              <div className="grid grid-cols-1 items-center gap-4">
-                <span className="font-medium">Description</span>
-                <span className="text-sm bg-slate-100 rounded-md p-3">
-                  {selectedRecharge?.description}
-                </span>
+                <span className="font-medium">Description:</span>
+                <span>{selectedPlan?.description}</span>
               </div>
             </div>
+
             <Button
               className="bg-blue-600 hover:bg-blue-700"
               onClick={() => setIsDialogOpen(false)}

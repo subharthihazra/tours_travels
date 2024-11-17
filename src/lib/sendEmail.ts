@@ -7,8 +7,8 @@ export default async function sendEmail(data: any) {
   });
 
   const sentFrom = new Sender(
-    "abhrajitrath@trial-3vz9dlezw0plkj50.mlsender.net",
-    "Abhrajit Rath"
+    "subharthi@trial-v69oxl5r32rg785k.mlsender.net",
+    "Subharthi Hazra"
   );
 
   const recipients = [new Recipient(data.email, data.name)];
@@ -19,9 +19,9 @@ export default async function sendEmail(data: any) {
     .setFrom(sentFrom)
     .setTo(recipients)
     .setReplyTo(sentFrom)
-    .setSubject("Recharge Success!")
+    .setSubject("Purchase Success!")
     .setText(
-      `Hi, Recharge of Rs ${data.amount} has been done on this ${data.operator} number : ${data.phone}, Enjoy our service!`
+      `Hi, Purchase of Rs ${data.price} has been done on this ${data.operator} number : ${data.phone}, Enjoy our service!`
     );
 
   await mailerSend.email.send(emailParams);

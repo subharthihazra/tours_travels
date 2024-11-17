@@ -19,34 +19,33 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Wifi, Phone, MessageSquare, Info, ChevronLeft } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Mock data for the current plan and available plans
-
-interface Plan {
-  id: number;
-  operator: string;
+// Adjusted interface for Travel Plan schema
+interface IPlan {
+  id: string;
+  highlights: string;
   name: string;
-  amount: number;
-  validity: string;
-  data: string;
-  voice: string;
-  sms: string;
-  description: string;
+  price: number;
+  startdate: string;
+  enddate: string;
+  destination: string;
+  duration: string;
+  description?: string;
 }
 
 export default function Plans() {
-  const [availablePlans, setAvailablePlans] = useState<Plan[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(null);
-  const [phone, setPhone] = useState<string | null>(null);
-  const [offer, setOffer] = useState<boolean>(false);
-  const [isloading, setisloading] = useState<boolean>(true);
+  const [availablePlans, setAvailablePlans] = useState<IPlan[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<IPlan | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [booking, setBooking] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
 
   const router = useRouter();
 
@@ -60,21 +59,18 @@ export default function Plans() {
           data.data?.map((item: any) => ({ ...item, id: item._id }))
         );
 
-        const { data: data2 } = await axios.get("/api/user", {
+        const { data: userData } = await axios.get("/api/user", {
           withCredentials: true,
         });
-        console.log(data2);
-        console.log(data.data);
-        const curPlan = data.data?.filter(
-          (item: any) => item._id === data2.data.curPlan
+
+        // Fetch current travel plan if user has one
+        const currentPlan = data.data.find(
+          (plan: IPlan) => plan.id === userData.currentPlan
         );
-        if (data2.offer) {
-          setOffer(true);
-        }
-        console.log(curPlan);
-        setCurrentPlan(curPlan.length === 1 ? curPlan?.[0] : null);
-        setisloading(false);
-      } catch (error: any) {
+        setCurrentPlan(currentPlan || null);
+
+        setIsLoading(false);
+      } catch (error) {
         console.log(error);
       }
     }
@@ -82,24 +78,39 @@ export default function Plans() {
     fetchPlans();
   }, []);
 
-  async function handlePay() {
+  async function handleBooking() {
+    setBooking(true);
     try {
-      if (!phone) {
-        throw new Error("Enter Phone No.");
+      if (!selectedPlan) {
+        throw new Error("Please select a travel plan.");
       }
       const { data } = await axios.post(
         "/api/user",
-        { curPlanId: selectedPlan?.id, phone },
+        { curPlanId: selectedPlan.id },
         {
           withCredentials: true,
         }
       );
-      router.push(
-        `/user/paying?amount=${currentPlan?.amount}${offer && "&offer=true"}`
-      );
-    } catch (error: any) {
+      router.push(`/user/paying?plan=${selectedPlan.name}`);
+    } catch (error) {
       console.log(error);
+      setBooking(false);
     }
+  }
+
+  function searchInObject(obj: any, query: string) {
+    const searchString = query.toLowerCase();
+
+    // Convert all values of the object to strings and search
+    return Object.values(obj).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchString);
+      }
+      if (Array.isArray(value)) {
+        return value.some((item) => item.toLowerCase().includes(searchString));
+      }
+      return false;
+    });
   }
 
   return (
@@ -112,58 +123,47 @@ export default function Plans() {
                 router.push("/user/dashboard");
               }}
             />
-            <h1 className="text-xl font-bold">Tours Travels Plans</h1>
+            <h1 className="text-xl font-bold">Tour Travel Packages</h1>
           </div>
           <UserButton />
         </div>
-        {/* Current Active Plan */}
 
-        {isloading && (
+        {/* Current Active Plan */}
+        {isLoading ? (
           <div className="flex flex-col gap-3">
+            {/* Skeleton loading */}
             <div className="flex gap-3">
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
             </div>
             <div className="flex gap-3">
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
-            </div>{" "}
-            <div className="flex gap-3">
-              <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
               <Skeleton className="w-1/4 h-[20px] rounded-full" />
             </div>
           </div>
-        )}
-
-        {!isloading && (
+        ) : (
           <>
             {currentPlan === null ? (
               <Card className="bg-blue-50 border-blue-200">
                 <CardHeader>
                   <CardTitle className="text-red-800">
-                    No Plan Bought Before
+                    No Plan Booked Yet
                   </CardTitle>
                 </CardHeader>
               </Card>
             ) : (
               <Card className="bg-blue-50 border-blue-200">
                 <CardHeader>
-                  <CardTitle className="text-blue-800">
-                    Last Bought Plan
-                  </CardTitle>
+                  <CardTitle className="text-blue-800">Current Plan</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm font-medium text-blue-600">
-                      Operator
+                      Destination
                     </p>
-                    <p>{currentPlan?.operator}</p>
+                    <p>{currentPlan?.destination}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-blue-600">
@@ -172,211 +172,144 @@ export default function Plans() {
                     <p>{currentPlan?.name}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">Amount</p>
-                    <p>₹{currentPlan?.amount}</p>
+                    <p className="text-sm font-medium text-blue-600">Price</p>
+                    <p>₹{currentPlan?.price}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-blue-600">
-                      Validity
+                      Duration
                     </p>
-                    <p>{currentPlan?.validity}</p>
+                    <p>{currentPlan?.duration}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">Data</p>
-                    <p>{currentPlan?.data}</p>
+                    <p className="text-sm font-medium text-blue-600">
+                      Start Date
+                    </p>
+                    <p>{currentPlan?.startdate}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-blue-600">Voice</p>
-                    <p>{currentPlan?.voice}</p>
+                    <p className="text-sm font-medium text-blue-600">
+                      End Date
+                    </p>
+                    <p>{currentPlan?.enddate}</p>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-blue-600">SMS</p>
-                    <p>{currentPlan?.sms}</p>
-                  </div>
+                  {currentPlan?.description && (
+                    <div>
+                      <p className="text-sm font-medium text-blue-600">
+                        Description
+                      </p>
+                      <p>{currentPlan?.description}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
 
-            {offer && (
-              <div className="w-full mx-auto">
-                <div className="text-center bg-gradient-to-r from-pink-500 to-yellow-500 text-white rounded-lg py-3">
-                  <div className="text-xl font-bold">
-                    {`You've Got an Offer by Referral!`}
-                  </div>
-                  <div className="text-white">
-                    Claim it by selecting a pack below for FREE!
-                  </div>
-                </div>
+            <div>
+              <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md flex gap-4">
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className="flex-grow border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+                  onChange={(e: any) => setSearch(e.target.value)}
+                />
+                <Button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  <Search className="h-4 w-4" />
+                  <span className="sr-only">Search</span>
+                </Button>
               </div>
-            )}
+            </div>
 
             {/* Available Plans */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-blue-800">Available Plans</CardTitle>
+                <CardTitle className="text-blue-800">
+                  Available Travel Plans
+                </CardTitle>
                 <CardDescription>
-                  Choose from our selection of plans
+                  Choose a travel plan to book your next adventure.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px] pr-4">
                   <div className="space-y-4">
-                    {availablePlans.map((plan, index) => (
-                      <Card
-                        key={index}
-                        className="hover:bg-blue-50 transition-colors"
-                      >
-                        <CardContent className="p-4 flex justify-between items-center">
-                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 flex-grow">
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Operator
-                              </p>
-                              <p>{plan.operator}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Plan Name
-                              </p>
-                              <p>{plan.name}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Amount
-                              </p>
-                              <p>₹{plan.amount}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Validity
-                              </p>
-                              <p>{plan.validity}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Data
-                              </p>
-                              <p>{plan.data}</p>
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-blue-600">
-                                Voice
-                              </p>
-                              <p>{plan.voice}</p>
-                            </div>
-                          </div>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className="ml-4"
-                                onClick={() => setSelectedPlan(plan)}
-                              >
-                                View Details
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                              <DialogHeader>
-                                <DialogTitle className="text-blue-800">
-                                  {plan.name} Details
-                                </DialogTitle>
-                                <DialogDescription>
-                                  Comprehensive information about the selected
-                                  plan
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="grid gap-4 py-4">
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Operator
-                                  </p>
-                                  <p>{plan.operator}</p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Plan Name
-                                  </p>
-                                  <p>{plan.name}</p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Amount
-                                  </p>
-                                  <p>₹{plan.amount}</p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Validity
-                                  </p>
-                                  <p>{plan.validity}</p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Data
-                                  </p>
-                                  <p className="flex items-center">
-                                    <Wifi className="w-4 h-4 mr-2" />
-                                    {plan.data}
-                                  </p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    Voice
-                                  </p>
-                                  <p className="flex items-center">
-                                    <Phone className="w-4 h-4 mr-2" />
-                                    {plan.voice}
-                                  </p>
-                                </div>
-                                <div className="grid grid-cols-2 items-center gap-4">
-                                  <p className="text-sm font-medium text-blue-600">
-                                    SMS
-                                  </p>
-                                  <p className="flex items-center">
-                                    <MessageSquare className="w-4 h-4 mr-2" />
-                                    {plan.sms}
-                                  </p>
-                                </div>
-                                {plan.description && (
-                                  <div className="col-span-2">
-                                    <p className="text-sm font-medium text-blue-600">
-                                      Description
-                                    </p>
-                                    <p className="flex items-start mt-1">
-                                      <Info className="w-4 h-4 mr-2 mt-1 flex-shrink-0" />
-                                      {plan.description}
-                                    </p>
-                                  </div>
-                                )}
+                    {availablePlans
+                      .filter((item: any) => searchInObject(item, search))
+                      .map((plan) => (
+                        <Card
+                          key={plan.id}
+                          className="hover:bg-blue-50 transition-colors"
+                          onClick={() => setSelectedPlan(plan)}
+                        >
+                          <CardContent className="p-4 flex justify-between items-center">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 flex-grow">
+                              <div>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Destination
+                                </p>
+                                <p>{plan.destination}</p>
                               </div>
-                              <DialogFooter>
-                                <div className="flex gap-2 flex-grow">
-                                  <Input
-                                    type="text"
-                                    value={phone || ""}
-                                    placeholder="Enter Mobile Number to Recharge"
-                                    onChange={(e) =>
-                                      setPhone(
-                                        e.target.value.replace(/[^0-9+]/g, "")
-                                      )
-                                    }
-                                  />
-                                  <Button
-                                    type="submit"
-                                    className="bg-blue-600 hover:bg-blue-700"
-                                    onClick={handlePay}
-                                  >
-                                    {offer
-                                      ? "Claim for Free"
-                                      : "Proceed to Pay"}
-                                  </Button>
-                                </div>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                        </CardContent>
-                      </Card>
-                    ))}
+                              <div>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Plan Name
+                                </p>
+                                <p>{plan.name}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Price
+                                </p>
+                                <p>₹{plan.price}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Duration
+                                </p>
+                                <p>{plan.duration}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Start Date
+                                </p>
+                                <p>{plan.startdate}</p>
+                              </div>
+                              <div>
+                                <Dialog>
+                                  <DialogTrigger>
+                                    <Button
+                                      className="w-full"
+                                      variant="outline"
+                                    >
+                                      Book Now
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>
+                                        You are going to purchase ...
+                                      </DialogTitle>
+                                    </DialogHeader>
+
+                                    <DialogFooter>
+                                      <Button
+                                        onClick={handleBooking}
+                                        disabled={
+                                          isLoading || !selectedPlan || booking
+                                        }
+                                      >
+                                        Pay now
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                   </div>
                 </ScrollArea>
               </CardContent>

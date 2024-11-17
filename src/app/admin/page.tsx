@@ -37,24 +37,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { UserButton } from "@clerk/nextjs";
 import axios from "axios";
 
-interface Plan {
+interface TourPlan {
   id: number;
-  operator: string;
+  highlights: string;
   name: string;
-  amount: number;
-  validity: string;
-  data: string;
-  voice: string;
-  sms: string;
-  description: string;
+  price: number;
+  startdate: string;
+  enddate: string;
+  destination: string;
+  duration: string;
+  description?: string;
 }
 
 export default function AdminDashboard() {
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<TourPlan[]>([]);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<TourPlan | null>(null);
+  
   useEffect(() => {
     async function fetchPlans() {
       try {
@@ -69,7 +70,7 @@ export default function AdminDashboard() {
     fetchPlans();
   }, []);
 
-  const handleAddPlan = async (newPlan: Omit<Plan, "id">) => {
+  const handleAddPlan = async (newPlan: Omit<TourPlan, "id">) => {
     try {
       await axios.post(
         "/api/admin",
@@ -85,7 +86,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleEditPlan = async (updatedPlan: Plan) => {
+  const handleEditPlan = async (updatedPlan: TourPlan) => {
     try {
       await axios.post(
         "/api/admin",
@@ -145,13 +146,13 @@ export default function AdminDashboard() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Operator</TableHead>
+              <TableHead>Highlights</TableHead>
               <TableHead>Plan Name</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Validity</TableHead>
-              <TableHead>Data</TableHead>
-              <TableHead>Voice</TableHead>
-              <TableHead>SMS</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Start Date</TableHead>
+              <TableHead>End Date</TableHead>
+              <TableHead>Destination</TableHead>
+              <TableHead>Duration</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -159,13 +160,13 @@ export default function AdminDashboard() {
           <TableBody>
             {plans.map((plan) => (
               <TableRow key={plan.id}>
-                <TableCell>{plan.operator}</TableCell>
+                <TableCell>{plan.highlights}</TableCell>
                 <TableCell>{plan.name}</TableCell>
-                <TableCell>₹{plan.amount}</TableCell>
-                <TableCell>{plan.validity}</TableCell>
-                <TableCell>{plan.data}</TableCell>
-                <TableCell>{plan.voice}</TableCell>
-                <TableCell>{plan.sms}</TableCell>
+                <TableCell>₹{plan.price}</TableCell>
+                <TableCell>{plan.startdate}</TableCell>
+                <TableCell>{plan.enddate}</TableCell>
+                <TableCell>{plan.destination}</TableCell>
+                <TableCell>{plan.duration}</TableCell>
                 <TableCell>{plan.description}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
@@ -228,21 +229,21 @@ export default function AdminDashboard() {
 }
 
 interface PlanFormProps {
-  initialData?: Plan;
+  initialData?: TourPlan;
   onSubmit: any;
   onCancel: () => void;
 }
 
 function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
-  const [formData, setFormData] = useState<Omit<Plan, "id">>(
+  const [formData, setFormData] = useState<Omit<TourPlan, "id">>(
     initialData || {
-      operator: "",
+      highlights: "",
       name: "",
-      amount: 0,
-      validity: "",
-      data: "",
-      voice: "",
-      sms: "",
+      price: 0,
+      startdate: "",
+      enddate: "",
+      destination: "",
+      duration: "",
       description: "",
     }
   );
@@ -266,18 +267,18 @@ function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
         <DialogDescription>
           {initialData
             ? "Edit the details of the existing plan."
-            : "Add a new tours and travels plan to the list."}
+            : "Add a new tour and travel plan to the list."}
         </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="operator" className="text-right">
-            Operator
+          <Label htmlFor="highlights" className="text-right">
+            Highlights
           </Label>
           <Input
-            id="operator"
-            name="operator"
-            value={formData.operator}
+            id="highlights"
+            name="highlights"
+            value={formData.highlights}
             onChange={handleChange}
             className="col-span-3"
           />
@@ -295,62 +296,64 @@ function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="amount" className="text-right">
-            Amount
+          <Label htmlFor="price" className="text-right">
+            Price
           </Label>
           <Input
-            id="amount"
-            name="amount"
+            id="price"
+            name="price"
             type="number"
-            value={formData.amount}
+            value={formData.price}
             onChange={handleChange}
             className="col-span-3"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="validity" className="text-right">
-            Validity
+          <Label htmlFor="startdate" className="text-right">
+            Start Date
           </Label>
           <Input
-            id="validity"
-            name="validity"
-            value={formData.validity}
+            id="startdate"
+            name="startdate"
+            type="date"
+            value={formData.startdate}
             onChange={handleChange}
             className="col-span-3"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="data" className="text-right">
-            Data
+          <Label htmlFor="enddate" className="text-right">
+            End Date
           </Label>
           <Input
-            id="data"
-            name="data"
-            value={formData.data}
+            id="enddate"
+            name="enddate"
+            type="date"
+            value={formData.enddate}
             onChange={handleChange}
             className="col-span-3"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="voice" className="text-right">
-            Voice
+          <Label htmlFor="destination" className="text-right">
+            Destination
           </Label>
           <Input
-            id="voice"
-            name="voice"
-            value={formData.voice}
+            id="destination"
+            name="destination"
+            value={formData.destination}
             onChange={handleChange}
             className="col-span-3"
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="sms" className="text-right">
-            SMS
+          <Label htmlFor="duration" className="text-right">
+            Duration
           </Label>
           <Input
-            id="sms"
-            name="sms"
-            value={formData.sms}
+            id="duration"
+            name="duration"
+            value={formData.duration}
             onChange={handleChange}
             className="col-span-3"
           />
@@ -362,7 +365,7 @@ function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
           <Textarea
             id="description"
             name="description"
-            value={formData.description}
+            value={formData.description || ""}
             onChange={handleChange}
             className="col-span-3"
           />
@@ -372,8 +375,8 @@ function PlanForm({ initialData, onSubmit, onCancel }: PlanFormProps) {
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
-          {initialData ? "Save Changes" : "Add Plan"}
+        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+          {initialData ? "Save" : "Add Plan"}
         </Button>
       </DialogFooter>
     </form>
