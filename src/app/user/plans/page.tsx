@@ -44,6 +44,7 @@ export default function Plans() {
   const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
   const [currentPlan, setCurrentPlan] = useState<IPlan | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading2, setIsLoading2] = useState<boolean>(false);
   const [booking, setBooking] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
@@ -80,6 +81,7 @@ export default function Plans() {
 
   async function handleBooking() {
     setBooking(true);
+    setIsLoading2(true);
     try {
       if (!selectedPlan) {
         throw new Error("Please select a travel plan.");
@@ -95,6 +97,7 @@ export default function Plans() {
     } catch (error) {
       console.log(error);
       setBooking(false);
+      setIsLoading2(false);
     }
   }
 
@@ -162,7 +165,9 @@ export default function Plans() {
             ) : (
               <Card className="bg-green-700 border-green-500">
                 <CardHeader>
-                  <CardTitle className="text-green-100">Last Purchase</CardTitle>
+                  <CardTitle className="text-green-100">
+                    Last Purchase
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
@@ -306,7 +311,6 @@ export default function Plans() {
                                     </DialogDescription>
                                   </DialogHeader>
                                   <DialogFooter>
-                                    
                                     <Button
                                       className="bg-gray-600 hover:bg-gray-700"
                                       onClick={() => setBooking(false)}
@@ -316,6 +320,7 @@ export default function Plans() {
                                     <Button
                                       className="bg-green-600 hover:bg-green-700"
                                       onClick={handleBooking}
+                                      disabled={isLoading2}
                                     >
                                       Confirm
                                     </Button>
