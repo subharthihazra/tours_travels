@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
         await Plan.findByIdAndUpdate(body.data._id, body.data);
         break;
       case "del":
-        console.log("id.",body.id)
-        await Plan.findByIdAndDelete(body.id);
+        console.log("id.", body.id);
+        await Plan.findByIdAndUpdate(body.id, { deleted: true });
         break;
     }
 

@@ -7,20 +7,14 @@ export async function GET(req: NextRequest) {
     const userData = await retriveUser();
 
     if (!userData.userid) {
-      return NextResponse.json(
-        { error: "Bad Request" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Bad Request" }, { status: 400 });
     }
     // todo
-    const plans = await Plan.find({});
+    const plans = await Plan.find({ deleted: { $ne: true } });
 
     return NextResponse.json({ info: "Success", data: plans }, { status: 201 });
   } catch (error) {
     console.log(error);
-    return NextResponse.json(
-      { error: "An error occurred" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
   }
 }

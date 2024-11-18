@@ -7,8 +7,9 @@ interface IPlan extends Document {
   startdate: string;
   enddate: string;
   destination: string;
-  duration: string; 
+  duration: string;
   description?: string;
+  deleted?: boolean;
 }
 
 const planSchema = new Schema<IPlan>(
@@ -21,6 +22,7 @@ const planSchema = new Schema<IPlan>(
     destination: { type: String, required: true },
     duration: { type: String, required: true },
     description: { type: String },
+    deleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
