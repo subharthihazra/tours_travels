@@ -154,68 +154,6 @@ export default function Plans() {
           </div>
         ) : (
           <>
-            {currentPlan === null ? (
-              <Card className="bg-green-700 border-green-500">
-                <CardHeader>
-                  <CardTitle className="text-red-200">
-                    No Purchase Yet
-                  </CardTitle>
-                </CardHeader>
-              </Card>
-            ) : (
-              <Card className="bg-green-700 border-green-500">
-                <CardHeader>
-                  <CardTitle className="text-green-100">
-                    Last Purchase
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-green-200">
-                      Destination
-                    </p>
-                    <p>{currentPlan?.destination}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-green-200">
-                      Plan Name
-                    </p>
-                    <p>{currentPlan?.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-green-200">Price</p>
-                    <p>₹{currentPlan?.price}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-green-200">
-                      Duration
-                    </p>
-                    <p>{currentPlan?.duration}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-green-200">
-                      Start Date
-                    </p>
-                    <p>{currentPlan?.startdate}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-green-200">
-                      End Date
-                    </p>
-                    <p>{currentPlan?.enddate}</p>
-                  </div>
-                  {currentPlan?.description && (
-                    <div>
-                      <p className="text-sm font-medium text-green-200">
-                        Description
-                      </p>
-                      <p>{currentPlan?.description}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
             <div>
               <div className="w-full mx-auto p-4 bg-gray-800 rounded-lg shadow-md flex gap-4">
                 <Input
